@@ -74,6 +74,8 @@ public:
 
   void setLEDState(unsigned int state);
 
+  virtual bool isSecure() const;
+
 private:
 
   void resizeFramebuffer();

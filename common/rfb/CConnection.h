@@ -132,7 +132,6 @@ namespace rfb {
     // sure the pixel buffer has been updated once this call returns.
     virtual void resizeFramebuffer();
 
-
     // Other methods
 
     // refreshFramebuffer() forces a complete refresh of the entire
@@ -163,7 +162,7 @@ namespace rfb {
     // Identities, to determine the unique(ish) name of the server.
     const char* getServerName() const { return serverName.buf; }
 
-    bool isSecure() const { return csecurity ? csecurity->isSecure() : false; }
+    virtual bool isSecure() const { return csecurity ? csecurity->isSecure() : false; }
 
     enum stateEnum {
       RFBSTATE_UNINITIALISED,

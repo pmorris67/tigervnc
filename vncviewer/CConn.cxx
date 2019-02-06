@@ -44,6 +44,10 @@
 #include <FL/Fl.H>
 #include <FL/fl_ask.H>
 
+#ifdef HAVE_SSH
+#include "SshConnectionSocket.h"
+#endif
+
 #include "CConn.h"
 #include "OptionsDialog.h"
 #include "DesktopWindow.h"
@@ -72,6 +76,22 @@ static const PixelFormat lowColourPF(8, 6, false, true,
 static const PixelFormat mediumColourPF(8, 8, false, true,
                                         7, 7, 3, 5, 2, 0);
 
+// Display dialog if we need user to trust the server.
+class FlSshConnectionCallback : public SshConnectionSocket::SshConnectionCallback {
+public:
+	bool addServerToKnownHosts(const char* hostname,
+		const char* key_type, const char* key_hash)
+	{
+		int result = fl_choice( \
+			"The authenticity of host %s can't be established.\n\n" \
+			"%s key fingerprint is %s.\n\n" \
+			"Are you sure you want to continue connecting?",
+			"Yes", "No", NULL,
+			hostname, key_type, key_hash);
+		return result == 0;
+	}
+};
+
 CConn::CConn(const char* vncServerName, network::Socket* socket=NULL)
   : serverHost(0), serverPort(0), desktop(NULL),
     updateCount(0), pixelCount(0),
@@ -92,8 +112,16 @@ CConn::CConn(const char* vncServerName, network::Socket* socket=NULL)
 
   if(sock == NULL) {
     try {
+#ifdef HAVE_SSH
+      if (strchr(vncServerName, '@') != NULL) {
+		  // This is an SSH tunnel
+		  FlSshConnectionCallback sshCallback;
+		  sock = SshConnectionSocket::create(vncServerName, &sshCallback);
+	  } else
+#endif
 #ifndef WIN32
       if (strchr(vncServerName, '/') != NULL) {
+	    // This is a unix domain socket
         sock = new network::UnixSocket(vncServerName);
         serverHost = sock->getPeerAddress();
         vlog.info(_("Connected to socket %s"), serverHost);
@@ -139,6 +167,14 @@ CConn::~CConn()
   if (sock)
     Fl::remove_fd(sock->getFd());
   delete sock;
+}
+
+bool CConn::isSecure() const
+{
+	// Connection is secure if the socket is secure, or the 
+	// protocol carried over it is.
+	return (sock && sock->isSecure()) 
+		|| CConnection::isSecure();
 }
 
 const char *CConn::connectionInfo()

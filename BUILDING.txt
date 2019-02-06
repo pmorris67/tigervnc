@@ -141,7 +141,7 @@ has already been built, per above.)
     system.  In particular, it will be necessary to customize the font, XKB,
     and DRI directories.)
 
-  > make TIGERVNC_SRCDIR={source_directory}
+  > make TIGERVNC_SRCDIR={source_directory} TIGERVNC_BUILDDIR={build_directory}
 
 
 Building the TigerVNC Server on Legacy Unix/Linux Systems

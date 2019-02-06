@@ -15,6 +15,11 @@ set(VNCVIEWER_SOURCES
   parameters.cxx
   keysym2ucs.c
   vncviewer.cxx)
+  
+if(HAVE_SSH)
+  set(VNCVIEWER_SOURCES ${VNCVIEWER_SOURCES} SshConnectionSocket.cxx)
+  link_directories(${SSH_LIBDIR})
+endif()
 
 if(WIN32)
   # Since vncviewer.rc is generated, local includes will be looking
@@ -49,6 +54,16 @@ else()
 endif()
 
 target_link_libraries(vncviewer rfb network rdr os ${FLTK_LIBRARIES} ${GETTEXT_LIBRARIES})
+
+if(HAVE_SSH)
+#  set(VNCVIEWER_SOURCES ${VNCVIEWER_SOURCES} SshChannelThread.cxx)
+  set(SSH_LIBRARIES ssh)
+    message(STATUS "SSH_INCLUDE_PATH='${SSH_INCLUDE_PATH}'")
+    message(STATUS "SSH_LIBDIR='${SSH_LIBDIR}'")
+  include_directories(${SSH_INCLUDE_PATH})
+#  target_sources(vncviewer PRIVATE "../../libssh/build/lib/libssh.so")
+  target_link_libraries(vncviewer ${SSH_LIBRARIES})
+endif()
 
 if(WIN32)
   target_link_libraries(vncviewer msimg32)

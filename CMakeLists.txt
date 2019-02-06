@@ -247,6 +247,22 @@ if(UNIX AND NOT APPLE)
   endif()
 endif()
 
+# Check for SSH library
+option(ENABLE_SSH "Enable SSH connection support" ON)
+if(ENABLE_SSH)
+  if(SSH_INCLUDE_PATH AND SSH_LIBDIR)
+    message(STATUS "SSH_INCLUDE_PATH='${SSH_INCLUDE_PATH}'")
+    message(STATUS "SSH_LIBDIR='${SSH_LIBDIR}'")
+    message(STATUS "SSH_LIBRARIES='${SSH_LIBRARIES}'")
+  else()
+    find_package(PkgConfig)
+    pkg_check_modules(SSH ssh)
+  endif()
+  set(CMAKE_REQUIRED_LIBRARIES -lssh)
+  set(CMAKE_REQUIRED_LIBRARIES)
+endif()
+set(HAVE_SSH ${ENABLE_SSH})
+
 # Check for GNUTLS library
 option(ENABLE_GNUTLS "Enable protocol encryption and advanced authentication" ON)
 if(ENABLE_GNUTLS)
