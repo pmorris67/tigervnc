@@ -262,8 +262,10 @@ void Viewport::serverCutText(const char* str, rdr::U32 len)
 
   // RFB doesn't have separate selection and clipboard concepts, so we
   // dump the data into both variants.
+#if !defined(WIN32) && !defined(__APPLE__)
   if (setPrimary)
     Fl::copy(buffer, ret, 0);
+#endif
   Fl::copy(buffer, ret, 1);
 
   delete [] buffer;
@@ -323,11 +325,13 @@ void Viewport::setLEDState(unsigned int state)
   vlog.debug("Got server LED state: 0x%08x", state);
 
   // The first message is just considered to be the server announcing
-  // support for this extension, so start by pushing our state to the
-  // remote end to get things in sync
+  // support for this extension. We will push our state to sync up the
+  // server when we get focus. If we already have focus we need to push
+  // it here though.
   if (firstLEDState) {
     firstLEDState = false;
-    pushLEDState();
+    if (hasFocus())
+      pushLEDState();
     return;
   }
 
@@ -750,8 +754,10 @@ void Viewport::flushPendingClipboard()
 {
   if (pendingServerCutText) {
     size_t len = strlen(pendingServerCutText);
+#if !defined(WIN32) && !defined(__APPLE__)
     if (setPrimary)
       Fl::copy(pendingServerCutText, len, 0);
+#endif
     Fl::copy(pendingServerCutText, len, 1);
   }
   if (pendingClientCutText) {
