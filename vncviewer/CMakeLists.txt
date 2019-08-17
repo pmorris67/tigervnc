@@ -56,12 +56,8 @@ endif()
 target_link_libraries(vncviewer rfb network rdr os ${FLTK_LIBRARIES} ${GETTEXT_LIBRARIES})
 
 if(HAVE_SSH)
-#  set(VNCVIEWER_SOURCES ${VNCVIEWER_SOURCES} SshChannelThread.cxx)
   set(SSH_LIBRARIES ssh)
-    message(STATUS "SSH_INCLUDE_PATH='${SSH_INCLUDE_PATH}'")
-    message(STATUS "SSH_LIBDIR='${SSH_LIBDIR}'")
   include_directories(${SSH_INCLUDE_PATH})
-#  target_sources(vncviewer PRIVATE "../../libssh/build/lib/libssh.so")
   target_link_libraries(vncviewer ${SSH_LIBRARIES})
 endif()
 

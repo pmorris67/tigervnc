@@ -76,6 +76,7 @@ static const PixelFormat lowColourPF(8, 6, false, true,
 static const PixelFormat mediumColourPF(8, 8, false, true,
                                         7, 7, 3, 5, 2, 0);
 
+#if HAVE_SSH
 // Display dialog if we need user to trust the server.
 class FlSshConnectionCallback : public SshConnectionSocket::SshConnectionCallback {
 public:
@@ -91,6 +92,7 @@ public:
 		return result == 0;
 	}
 };
+#endif
 
 CConn::CConn(const char* vncServerName, network::Socket* socket=NULL)
   : serverHost(0), serverPort(0), desktop(NULL),
