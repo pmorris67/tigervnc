@@ -61,8 +61,6 @@ public:
 
   void bell();
 
-  void serverCutText(const char* str, rdr::U32 len);
-
   void framebufferUpdateStart();
   void framebufferUpdateEnd();
   void dataRect(const rfb::Rect& r, int encoding);
@@ -75,6 +73,10 @@ public:
   void setLEDState(unsigned int state);
 
   virtual bool isSecure() const;
+  
+  virtual void handleClipboardRequest();
+  virtual void handleClipboardAnnounce(bool available);
+  virtual void handleClipboardData(const char* data);
 
 private:
 
