@@ -76,7 +76,7 @@ static const PixelFormat lowColourPF(8, 6, false, true,
 static const PixelFormat mediumColourPF(8, 8, false, true,
                                         7, 7, 3, 5, 2, 0);
 
-#if HAVE_SSH
+#ifdef HAVE_SSH
 // Display dialog if we need user to trust the server.
 class FlSshConnectionCallback : public SshConnectionSocket::SshConnectionCallback {
 public:

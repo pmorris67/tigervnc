@@ -20,6 +20,8 @@
 #include <rdr/Exception.h>
 #include <rfb/LogWriter.h>
 
+#include <afunix.h>
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -140,8 +142,8 @@ SshConnectionSocket* SshConnectionSocket::create(const char* vncServerName,
     }
     
     if (ssh_channel_is_open(ssc)) {
-		int socks[2] = { 0 };
-		int rc = socketpair(AF_UNIX, SOCK_STREAM, 0, socks);
+      int socks[2] = { 0 };
+      int rc = socketpair(AF_UNIX, SOCK_STREAM, 0, socks);
 		if (rc == 0) {
 			sock = new SshConnectionSocket(ss, ssc, socks);
 		} else {
