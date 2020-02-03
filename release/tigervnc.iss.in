@@ -1,11 +1,21 @@
 [Setup]
 #ifdef WIN64
 ArchitecturesInstallIn64BitMode=x64
+#ifdef BUILD_WINVNC
 AppName=TigerVNC 64-bit
 AppVerName=TigerVNC 64-bit @VERSION@ (@BUILD@)
 #else
+AppName=TigerVNC Viewer 64-bit
+AppVerName=TigerVNC Viewer 64-bit @VERSION@ (@BUILD@)
+#endif // BUILD_WINVNC
+#else
+#ifdef BUILD_WINVNC
 AppName=TigerVNC
 AppVerName=TigerVNC v@VERSION@ (@BUILD@)
+#else
+AppName=TigerVNC Viewer
+AppVerName=TigerVNC Viewer v@VERSION@ (@BUILD@)
+#endif
 #endif
 AppVersion=@VERSION@
 AppPublisher=TigerVNC project
